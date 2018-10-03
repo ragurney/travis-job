@@ -15,12 +15,13 @@ import (
 
 // Job a Travis action's job configuration
 type Job struct {
-	branch      string `required:"true"`
-	client      *http.Client
-	repoOwner   string `required:"true"`
-	repoName    string `required:"true"`
-	travisToken string `required:"true"`
-	travisTLD   string `required:"true"`
+	branch       string `required:"true"`
+	client       *http.Client
+	repoOwner    string `required:"true"`
+	repoName     string `required:"true"`
+	travisToken  string `required:"true"`
+	travisTLD    string `required:"true"`
+	pollInterval int    `required:"true"`
 }
 
 type triggerBuildResponse struct {
@@ -57,16 +58,17 @@ var travisDoneTermSet = map[string]struct{}{
 }
 
 // NewJob initializes a Travis action's job
-func NewJob(branch string, owner string, repoName string, token string, tld string) *Job {
+func NewJob(branch string, owner string, repoName string, token string, tld string, pi int) *Job {
 	zerolog.TimeFieldFormat = ""
 
 	j := Job{
-		client:      &http.Client{Timeout: 5 * time.Second},
-		branch:      branch,
-		repoOwner:   owner,
-		repoName:    repoName,
-		travisToken: token,
-		travisTLD:   tld,
+		client:       &http.Client{Timeout: 5 * time.Second},
+		branch:       branch,
+		repoOwner:    owner,
+		repoName:     repoName,
+		travisToken:  token,
+		travisTLD:    tld,
+		pollInterval: pi,
 	}
 
 	return &j
@@ -145,7 +147,7 @@ func (j *Job) pollForResult(requestID string) (build, error) {
 	c := make(chan build, 1)
 	sentBuildID := false
 
-	ticker := time.NewTicker(30 * time.Second) // TODO: make configurable
+	ticker := time.NewTicker(time.Duration(j.pollInterval) * time.Second)
 	go func() {
 		for range ticker.C {
 			log.Debug().Msg("JOB - TRAVIS: Polling for build result...")
@@ -160,6 +162,7 @@ func (j *Job) pollForResult(requestID string) (build, error) {
 						j.repoName,
 						b.ID,
 					)
+					sentBuildID = true
 				}
 				if contains(travisDoneTermSet, b.State) {
 					c <- b

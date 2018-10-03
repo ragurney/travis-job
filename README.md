@@ -9,4 +9,7 @@ Required Environment Variables:
 * `TRAVIS_TOKEN`
 * `TRAVIS_TLD` (e.g. '.org' or '.com')
 
+Optional Environment Variables:
+* `POLL_INTERVAL` (in seconds, default: 30)
+
 `go run main.go`
