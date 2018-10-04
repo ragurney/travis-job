@@ -7,7 +7,7 @@ Required Environment Variables:
 * `REPO_OWNER`
 * `REPO_NAME`
 * `TRAVIS_TOKEN`
-* `TRAVIS_TLD` (e.g. '.org' or '.com')
+* `TRAVIS_TLD` (e.g. 'org' or 'com')
 
 Optional Environment Variables:
 * `POLL_INTERVAL` (in seconds, default: 30)

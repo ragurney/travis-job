@@ -110,7 +110,13 @@ func (j *Job) triggerBuild() (requestID string, err error) {
 func (j *Job) getBuildStatus(requestID string) (b build, err error) {
 	log.Debug().Msgf("JOB - TRAVIS: Fetching build status for request '%s'", requestID)
 
-	url := fmt.Sprintf("https://api.travis-ci.org/repo/%s%%2F%s/request/%s", j.repoOwner, j.repoName, requestID)
+	url := fmt.Sprintf(
+		"https://api.travis-ci.%s/repo/%s%%2F%s/request/%s",
+		j.travisTLD,
+		j.repoOwner,
+		j.repoName,
+		requestID,
+	)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -120,7 +126,7 @@ func (j *Job) getBuildStatus(requestID string) (b build, err error) {
 	req.Header.Set("Travis-API-Version", "3")
 	req.Header.Set("Authorization", fmt.Sprintf("token %s", j.travisToken))
 
-	resp, err := j.client.Do(req)
+	resp, err := j.client.Do(req) // TODO: check response status
 	if err != nil {
 		return build{}, err
 	}
