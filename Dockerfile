@@ -15,7 +15,7 @@ RUN GIT_REV=$(git rev-parse HEAD) \
 	go build -a -installsuffix cgo \
 	-o app -ldflags "-X main.GitRevision=${GIT_REV}" .
 
-FROM debian:buster-slim
+FROM debian:buster
 
 LABEL maintainer "Ryan Gurney <rygurney@zendesk.com>"
 

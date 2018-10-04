@@ -30,7 +30,4 @@ func main() {
 		travisTLD,
 		pollInterval,
 	).Execute()
-
-	// Wait for result from job
-	select {}
 }
