@@ -1,4 +1,7 @@
 # travis-job
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/ragurney/travis-job.svg)](https://hub.docker.com/r/ragurney/travis-job/)
+
 A simple tool written in Go to kick off, monitor, and report on a single Travis job.
 
 ## Usage
